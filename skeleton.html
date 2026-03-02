@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PIANO: Physics-Informed Neural Operator for NLFFF Extrapolation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Google Font (clean academic look) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f3f5f9;  /* soft outer background */
+    color: #111;
+    line-height: 1.6;
+    }
+
+    /* Wide background card */
+    .card {
+    max-width: 1200px;       /* wider than text */
+    margin: 60px auto;
+    padding: 60px 0;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Actual readable content width */
+    .container {
+    max-width: 900px;        /* keep your readable width */
+    margin: 0 auto;
+    padding: 0 40px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      margin-top: 60px;
+      font-weight: 600;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 8px;
+    }
+
+    .authors {
+      text-align: center;
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    .links {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .links a {
+      text-decoration: none;
+      margin: 0 10px;
+      padding: 8px 14px;
+      border: 1px solid #111;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      transition: 0.2s ease;
+      color: #111;
+    }
+
+    .links a:hover {
+      background: #111;
+      color: white;
+    }
+
+    .teaser img {
+      width: 100%;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .section-text {
+      margin-top: 20px;
+      font-size: 0.95rem;
+      color: #333;
+    }
+
+    .footer {
+      margin-top: 80px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      font-size: 0.8rem;
+      text-align: center;
+      color: #666;
+    }
+
+    .hero {
+    text-align: center;
+    margin-bottom: 20px;
+    }
+
+    .hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    }
+
+    .subtitle {
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #555;
+    border: none;        /* prevents your default h2 border */
+    margin-top: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+  <div class="container">
+
+    <!-- Title -->
+    <div class="hero">
+    <h1>PIANO</h1>
+    <h2 class="subtitle">
+        Physics-Informed Attention-Enhanced Fourier Neural Operator
+    </h2>
+    </div>
+
+    <!-- Authors -->
+    <div class="authors">
+      Jinghao Cao · Qin Li · Mengnan Du · Haimin Wang · Bo Shen<br>
+      New Jersey Institute of Technology
+    </div>
+
+    <!-- Paper / Code Links -->
+    <div class="links">
+      <a href="https://arxiv.org/pdf/2510.05351">Paper</a>
+      <a href="https://github.com/Autumnstar-cjh/PIANO">Code</a>
+      <a href="https://arxiv.org/abs/2510.05351">ArXiv</a>
+      <a href="demo.html">Live Demo</a>
+    </div>
+
+    <!-- Teaser Figure -->
+    <div class="teaser">
+      <img src="assets/NLFFF-pipeline.png" alt="NLFFF pipeline">
+    </div>
+
+    <!-- Abstract Section -->
+    <h2>Abstract</h2>
+    <div class="section-text">
+        <p>
+            Solar magnetic field extrapolation is essential for understanding solar activity 
+            and space weather events such as flares and coronal mass ejections. A widely used 
+            approach is the Nonlinear Force-Free Field (NLFFF) approximation, which reconstructs 
+            the three-dimensional coronal magnetic field from observed surface magnetograms. 
+            While effective, traditional NLFFF solvers rely on iterative numerical methods 
+            that are computationally expensive and difficult to apply in real-time settings.
+        </p>
+
+        <p>
+            PIANO (Physics-Informed Attention-enhanced Fourier Neural Operator) is designed 
+            to accelerate NLFFF extrapolation without sacrificing physical consistency. 
+            Instead of solving nonlinear equations iteratively, PIANO learns a direct mapping 
+            from boundary magnetic field observations to the full 3D coronal field using 
+            Fourier neural operator layers. The model supports multimodal input, combining 
+            image-based boundary data with physical scalar parameters, and integrates 
+            attention mechanisms to effectively fuse this information.
+        </p>
+
+        <p>
+            To ensure physically meaningful predictions, PIANO incorporates divergence-free 
+            and force-free constraints directly into training. A two-phase training strategy 
+            further improves volumetric consistency. Experimental results demonstrate that 
+            PIANO achieves state-of-the-art accuracy while significantly reducing computational 
+            cost, making fast and reliable NLFFF extrapolation feasible for large-scale 
+            studies and potential real-time applications.
+        </p>
+    </div>
+
+    <!-- Model Overview -->
+    <h2>Model Overview</h2>
+    <div class="section-text">
+        <p>
+            <strong>PIANO</strong> (Physics-Informed Attention-enhanced Fourier Neural Operator) 
+            is designed to efficiently extrapolate the 3D coronal magnetic field from observed 
+            2D boundary magnetograms, while enforcing key physical laws.
+        </p>
+        <p>
+            It maps boundary magnetic field data Bx(x,y), By(x,y), Bz(x,y)
+            to a volumetric 3D magnetic field Bx(x,y,z), By(x,y,z), Bz(x,y,z).
+        </p>
+      
+    </div>
+    <div class="teaser">
+      <img src="assets/PIANO-architecture.png" alt="PIANO Model Architecture">
+    </div>
+    <div class="section-text">
+
+    <p>
+        <strong>Multimodal Input Lifting.</strong>
+        The observed magnetic field is first lifted into a high-dimensional feature space 
+        using a small neural network (MLP). In parallel, scalar physical parameters 
+        (domain lengths in x, y, and z) are processed through a separate lifting network. 
+        These features are refined using a lightweight attention mechanism and then 
+        combined to form the model’s initial representation.
+    </p>
+
+    <p>
+        <strong>Fourier Neural Operator Layers.</strong>
+        The combined features are passed through a sequence of Fourier layers. 
+        These layers operate in frequency space, allowing the model to learn 
+        global spatial interactions efficiently. This enables PIANO to model 
+        long-range magnetic field dependencies with significantly lower 
+        computational cost than traditional solvers.
+    </p>
+
+    <p>
+        <strong>Projection to 3D Magnetic Field.</strong>
+        A final projection layer maps the learned features back to the physical 
+        magnetic field components Bx, By, and Bz throughout the 3D volume.
+    </p>
+
+    <p>
+        <strong>Physics-Informed Training.</strong>
+        During training, the model is constrained to produce physically consistent 
+        magnetic fields. Two physics-based penalties are enforced:
+        (1) a divergence-free condition, and 
+        (2) a force-free condition. 
+        These constraints ensure that predictions remain physically plausible.
+    </p>
+
+    <p>
+        <strong>Two-Phase Training Strategy.</strong>
+        PIANO is trained in two stages. First, the model learns from 2D boundary 
+        data with physics constraints. In the second phase, the model is retrained 
+        using its own 3D predictions as input, further improving volumetric consistency.
+    </p>
+
+    </div>
+
+    <!-- Results Section -->
+    <h2>Results</h2>
+
+    <div class="section-text" style="margin-bottom: 40px;">
+    <p>
+        Comparison of predicted magnetic field components and corresponding error maps 
+        across multiple neural operator models at different heights (2–16 Mm).
+    </p>
+    <p>
+        Errors are largest near the lower boundary (2–4 Mm) and decrease with height. 
+        While most state-of-the-art models perform well on Bx and Bz, the By component 
+        presents greater structural complexity and is more challenging to extrapolate.
+        PIANO demonstrates competitive accuracy at lower heights and superior performance 
+        at higher heights, particularly for By.
+    </p>
+    </div>
+
+    <!-- Bx -->
+    <h3 style="margin-top: 50px;">Bx Component</h3>
+
+    <div class="teaser">
+    <img src="assets/fig4-bx.png" alt="Bx comparison">
+    </div>
+
+    <div class="section-text" style="margin-bottom: 50px;">
+    <p>
+        Most neural operator models achieve accurate extrapolation for Bx, 
+        with errors concentrated near lower heights (2–4 Mm).
+    </p>
+    <p>
+        Prediction accuracy improves as height increases, reflecting smoother 
+        magnetic structures away from the boundary.
+    </p>
+    </div>
+
+    <!-- By -->
+    <h3>By Component</h3>
+
+    <div class="teaser">
+    <img src="assets/fig4-by.png" alt="By comparison">
+    </div>
+
+    <div class="section-text" style="margin-bottom: 50px;">
+    <p>
+        The By structure is more complex than Bx and Bz, resulting in larger 
+        and more persistent extrapolation errors across heights.
+    </p>
+    <p>
+        PIANO maintains stronger accuracy at higher heights, demonstrating 
+        clearer structural consistency compared to other models.
+    </p>
+    </div>
+
+    <!-- Bz -->
+    <h3>Bz Component</h3>
+
+    <div class="teaser">
+    <img src="assets/fig4-bz.png" alt="Bz comparison">
+    </div>
+
+    <div class="section-text">
+    <p>
+        Similar to Bx, most models achieve strong reconstruction performance 
+        for Bz, with higher errors concentrated near the lower boundary.
+    </p>
+    <p>
+        Error magnitude decreases with height, indicating improved agreement 
+        with ground truth in upper layers.
+    </p>
+    </div>
+
+    <!-- Demo -->
+    <h2>Demo</h2>
+    <div class="section-text">
+    <p>
+        Demonstration of PIANO applied to Active Region AR11158. 
+        The model predicts the coronal magnetic field components which are compared to ground truth observations. 
+        The visualization shows volumetric reconstruction across height, illustrating 
+        the spatial consistency and smooth field evolution produced 
+        by PIANO.
+    </p>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 60px;">
+    <video 
+        controls 
+        loop 
+        autoplay 
+        muted 
+        playsinline
+        style="max-width: 90%; height: auto; border-radius: 8px;"
+    >
+        <source src="assets/AR11158.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    </div>
+        
+    <!-- Citation -->
+    <h2>Citation</h2>
+    <div class="section-text">
+    <pre style="background:#f6f6f6; padding:15px; border-radius:6px;">
+    @misc{cao2025physicsinformedattentionenhancedfourierneural,
+          title={Physics-informed Attention-enhanced Fourier Neural Operator for 
+                 Solar Magnetic Field Extrapolations},
+          author={Jinghao Cao and Qin Li and Mengnan Du and Haimin Wang and Bo Shen},
+          year={2025},
+          eprint={2510.05351},
+          archivePrefix={arXiv},
+          primaryClass={cs.LG},
+          url={https://arxiv.org/abs/2510.05351}
+         }
+    </pre>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      © 2025 PIANO Project · Hosted on GitHub Pages
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

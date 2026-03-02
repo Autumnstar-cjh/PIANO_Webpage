@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>PIANO: Physics-Informed Neural Operator for NLFFF Extrapolation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="#">PIANO</a>
+      <ul class="nav-links">
+        <li><a href="#abstract">Abstract</a></li>
+        <li><a href="#model">Model</a></li>
+        <li><a href="#results">Results</a></li>
+        <li><a href="#demo">Demo</a></li>
+        <li><a href="#citation">Citation</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="hero">
+    <p class="hero-eyebrow">Solar Physics · Machine Learning · 2025</p>
+    <h1 class="hero-title">PI<em>A</em>NO</h1>
+    <p class="hero-subtitle">Physics-Informed Attention-Enhanced Fourier Neural Operator for Solar Magnetic Field
+      Extrapolation</p>
+    <div class="authors">
+      <strong>Jinghao Cao · Qin Li · Mengnan Du · Haimin Wang · Bo Shen</strong><br>
+      New Jersey Institute of Technology
+    </div>
+    <div class="links">
+      <a class="link-btn primary" href="https://arxiv.org/pdf/2510.05351">↓ Paper PDF</a>
+      <a class="link-btn secondary" href="https://arxiv.org/abs/2510.05351">ArXiv</a>
+      <a class="link-btn secondary" href="https://github.com/Autumnstar-cjh/PIANO">GitHub</a>
+    </div>
+    <div class="figure reveal">
+      <img src="assets/NLFFF-pipeline.png" alt="NLFFF pipeline overview">
+      <p class="figure-caption">Fig. 1 — NLFFF extrapolation pipeline: reconstructing 3D coronal magnetic field from 2D
+        surface magnetogram observations.</p>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <!-- Abstract -->
+    <section id="abstract">
+      <p class="section-label reveal">Abstract</p>
+      <h2 class="section-heading reveal">Faster, physics-consistent<br>coronal field reconstruction</h2>
+      <div class="abstract-body reveal">
+        <p>Solar magnetic field extrapolation is essential for understanding flares and coronal mass ejections.
+          Traditional NLFFF solvers rely on iterative numerical methods that are computationally expensive and difficult
+          to apply in real-time. PIANO learns a direct mapping from boundary observations to the full 3D coronal field —
+          achieving state-of-the-art accuracy at a fraction of the cost.</p>
+        <p>PIANO supports multimodal input, combining image-based boundary data with physical scalar parameters, and
+          integrates attention mechanisms to fuse this information effectively.</p>
+        <p>To ensure physical plausibility, divergence-free and force-free constraints are incorporated directly into
+          training. A two-phase strategy further improves volumetric consistency throughout the predicted field.</p>
+      </div>
+      <div class="stats-row reveal">
+        <div class="stat-cell">
+          <div class="stat-number">3D</div>
+          <div class="stat-label">Coronal field from<br>2D boundary input</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-number">PINN</div>
+          <div class="stat-label">Physics constraints<br>divergence + force-free</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-number">SoTA</div>
+          <div class="stat-label">Accuracy vs.<br>prior neural operators</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Model description -->
+    <section id="model">
+      <p class="section-label reveal">Architecture</p>
+      <h2 class="section-heading reveal">How PIANO works</h2>
+      <div class="figure reveal">
+        <img src="assets/PIANO-architecture.png" alt="PIANO Model Architecture">
+        <p class="figure-caption">Fig. 2 — PIANO architecture: multimodal lifting, Fourier neural operator layers, and
+          physics-constrained projection.</p>
+      </div>
+      <div class="features-grid reveal">
+        <div class="feature-card">
+          <div class="feature-num">00</div>
+          <div class="feature-title">The Core Idea</div>
+          <div class="feature-text">PIANO maps boundary magnetic field data B<sub>x</sub>(x,y), B<sub>y</sub>(x,y),
+            B<sub>z</sub>(x,y) directly to a volumetric 3D field B(x,y,z) — replacing expensive iterative solvers with a
+            single learned forward pass, without sacrificing physical consistency.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-num">01</div>
+          <div class="feature-title">Multimodal Input Lifting</div>
+          <div class="feature-text">Observed magnetic field is lifted into high-dimensional feature space via MLP.
+            Scalar physical parameters (domain lengths) are processed in parallel and fused with the image features
+            using a lightweight attention mechanism.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-num">02</div>
+          <div class="feature-title">Fourier Neural Operator Layers</div>
+          <div class="feature-text">Features pass through Fourier layers operating in frequency space, capturing global
+            spatial interactions and long-range magnetic field dependencies at low computational cost.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-num">03</div>
+          <div class="feature-title">Physics-Informed Training</div>
+          <div class="feature-text">Two penalties are enforced during training: a divergence-free condition (∇·B = 0)
+            and a force-free condition (J × B = 0), ensuring predictions remain physically plausible.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-num">04</div>
+          <div class="feature-title">Two-Phase Training Strategy</div>
+          <div class="feature-text">Phase one trains on 2D boundary data with physics constraints. Phase two retrains
+            using the model's own 3D predictions as input, progressively refining volumetric consistency.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results from paper-->
+    <section id="results">
+      <p class="section-label reveal">Results</p>
+      <h2 class="section-heading reveal">Component-wise comparison<br>across heights 2–16 Mm</h2>
+      <p class="reveal"
+        style="font-size:0.93rem; color:var(--ink-muted); max-width:640px; line-height:1.75; margin-bottom:10px;">
+        Predicted field components and error maps compared across models at heights 2–16 Mm. Errors concentrate near the
+        lower boundary and diminish with height. PIANO shows particular strength at higher altitudes, especially for the
+        structurally complex B<sub>y</sub> component.</p>
+
+      <div class="component-header reveal">
+        <span class="component-name">B<sub>x</sub></span>
+        <span class="component-tag tag-bx">Horizontal · x-axis</span>
+      </div>
+      <div class="figure reveal"><img src="assets/fig4-bx.png" alt="Bx comparison"></div>
+      <p class="component-note reveal">Most neural operator models achieve accurate extrapolation for B<sub>x</sub>,
+        with errors concentrated near lower heights (2–4 Mm). Prediction accuracy improves as height increases,
+        reflecting smoother magnetic structures away from the boundary.</p>
+
+      <div class="component-header reveal">
+        <span class="component-name">B<sub>y</sub></span>
+        <span class="component-tag tag-by">Horizontal · y-axis</span>
+      </div>
+      <div class="figure reveal"><img src="assets/fig4-by.png" alt="By comparison"></div>
+      <p class="component-note reveal">The B<sub>y</sub> structure is more complex, resulting in larger and more
+        persistent errors across heights. PIANO maintains stronger accuracy at higher heights, demonstrating clearer
+        structural consistency compared to other models.</p>
+
+      <div class="component-header reveal">
+        <span class="component-name">B<sub>z</sub></span>
+        <span class="component-tag tag-bz">Vertical · z-axis</span>
+      </div>
+      <div class="figure reveal"><img src="assets/fig4-bz.png" alt="Bz comparison"></div>
+      <p class="component-note reveal">Similar to B<sub>x</sub>, most models achieve strong reconstruction for
+        B<sub>z</sub>. Error magnitude decreases with height, indicating improved agreement with ground truth in upper
+        layers.</p>
+    </section>
+
+    <!-- Demo -->
+    <section id="demo">
+      <p class="section-label reveal">Demo</p>
+      <h2 class="section-heading reveal">Active Region AR11158</h2>
+      <p class="reveal"
+        style="font-size:0.93rem; color:var(--ink-muted); max-width:600px; line-height:1.75; margin-bottom:28px;">PIANO
+        applied to AR11158. The visualization shows volumetric reconstruction across heights 0.5-26 Mm, illustrating
+        spatial consistency and smooth field evolution.</p>
+      <div class="figure reveal">
+        <video controls loop autoplay muted playsinline>
+          <source src="assets/11158_nohead.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <p class="figure-caption">Fig. 3 — PIANO prediction vs. ground truth for AR11158, animated across coronal
+          heights 0.5-26 Mm.</p>
+      </div>
+    </section>
+
+    <!-- Bibtex citation-->
+    <section id="citation">
+      <p class="section-label reveal">Citation</p>
+      <h2 class="section-heading reveal">Cite this work</h2>
+      <div class="citation-block reveal">
+        <button class="copy-btn" onclick="copyCitation(this)">Copy</button>
+        <pre id="cite-text">@misc{cao2025physicsinformedattentionenhancedfourierneural,
+  title   = {Physics-informed Attention-enhanced Fourier Neural Operator 
+             for Solar Magnetic Field Extrapolations},
+  author  = {Jinghao Cao and Qin Li and Mengnan Du and Haimin Wang and Bo Shen},
+  year    = {2025},
+  eprint  = {2510.05351},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url     = {https://arxiv.org/abs/2510.05351}
+}</pre>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>© 2025 PIANO Project · New Jersey Institute of Technology</p>
+    <p>Hosted on GitHub Pages</p>
+  </footer>
+
+  <script>
+
+  </script>
+  <script src="js/script.js"></script>
+</body>
+
+</html>
